@@ -1,0 +1,28 @@
+      background: #fff7ed;
+      border: 2px solid #a05a2c;
+      border-radius: 12px;
+      padding: 1rem 1.5rem 1.5rem;
+      box-shadow: 4px 4px 8px rgba(160, 90, 44, 0.3);
+      margin-bottom: 2rem;
+    }
+    form#review-form label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: #6b3e26;
+      font-size: 1rem;
+    }
+    form#review-form textarea {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      border-radius: 6px;
+      border: 1.5px solid #a05a2c;
+      padding: 0.5rem;
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      color: #4b3a2f;
+      margin-bottom: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    form
