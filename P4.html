@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Arte en Acero — Cuchillos y cuero</title>
+
+  <!-- Favicon (SVG data URI: cuchillo minimal) -->
+  <link rel="icon" href='data:image/svg+xml;utf8,
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="8" fill="%23f7efe6"/>
+      <path d="M8 44c10-8 28-28 40-36" stroke="%23823a2d" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <rect x="36" y="32" width="20" height="6" rx="2" fill="%23704a3a"/>
+    </svg>' />
+
+  <style>
+    /* ---------- Reset / base ---------- */
+    :root{
+      --bg:#f6efe8;
+      --wood:#a66b3a;
+      --leather:#6b3928;
+      --accent:#7b2b2b;
+      --muted:#8a6f5b;
+      --card:#fff8f3;
+      --shadow: rgba(40,20,10,0.12);
+      --glass: rgba(255,255,255,0.6);
+      --maxw:1200px;
+      --radius:14px;
+      font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        linear-gradient(180deg, rgba(107,57,40,0.06) 0%, rgba(182,137,109,0.02) 100%),
+        var(--bg);
+      color:#2d1f19;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+      padding-bottom:80px; /* space for floating btn */
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block;border-radius:8px}
+
+    .container{max-width:var(--maxw);margin:0 auto;padding:20px;}
+    header{background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));backdrop-filter: blur(2px);border-radius:16px;padding:14px;box-shadow:0 6px 20px var(--shadow);display:flex;align-items:center;gap:14px;}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:64px;height:64px;border-radius:12px;
+      background:
+        linear-gradient(135deg,#b57a4d 0%, #8b5a3f 100%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M10 48c8-6 28-26 42-34" stroke="%23f5efe6" stroke-width="4" stroke-linecap="round" fill="none"/></svg>');
+      box-shadow: 0 6px 18px rgba(100,50,20,0.12);
+      flex: 0 0 64px;
+    }
+    h1{font-size:20px;margin:0}
+    .tagline{font-size:12px;color:var(--muted);margin-top:4px}
+
+    /* Nav / hamburger */
+    .nav {
+      margin-left:auto;
+      display:flex;align-items:center;gap:12px;
+    }
+    .hamburger{
+      width:46px;height:38px;border-radius:10px;background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;
+      box-shadow:0 6px 14px rgba(40,20,10,0.08);
+    }
+    .hamburger .lines{width:22px;height:14px;display:flex;flex-direction:column;justify-content:space-between}
+    .hamburger .lines span{display:block;height:2px;background:var(--leather);border-radius:2px}
+
+    .navpanel{
+      position:fixed;top:0;right:0;height:100vh;width:280px;background:linear-gradient(180deg,#fbf6f1,#f0e6de);box-shadow:-10px 0 30px rgba(10,6,4,0.12);padding:28px;transform:translateX(110%);transition:transform .32s ease;border-left:1px solid rgba(0,0,0,0.03);
+      z-index:1200;
+    }
+    .navpanel.open{transform:translateX(0)}
+    .navpanel h3{margin:0 0 8px 0}
+    .navpanel a{display:block;padding:10px 8px;border-radius:8px;color:var(--leather);margin-top:6px}
+    .navpanel a:hover{background:rgba(107,57,40,0.06)}
+
+    /* Carousel */
+    .carousel{position:relative;margin:20px 0;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(15,10,6,0.08)}
+    .slides{display:flex;transition:transform .6s cubic-bezier(.22,.9,.35,1);width:100%}
+    .slide{min-width:100%;display:flex;align-items:center;justify-content:flex-start;padding:40px;gap:24px;background-size:cover;background-position:center;color:#fff}
+    .slide .overlay{background:linear-gradient(90deg, rgba(0,0,0,0.55), rgba(0,0,0,0.12));padding:32px;border-radius:12px;max-width:540px}
+    .slide h2{margin:0;font-size:28px;letter-spacing:0.4px}
+    .slide p{margin-top:8px;color:rgba(255,255,255,0.9)}
+
+    .carousel .dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.6);cursor:pointer}
+    .dot.active{background:#fff}
+
+    .carousel .arrow{position:absolute;top:50%;transform:translateY(-50%);background:var(--glass);width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+    .carousel .arrow.left{left:12px}
+    .carousel .arrow.right{right:12px}
+
+    /* Catalog */
+    .catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:24px 0}
+    .card{background:linear-gradient(180deg,var(--card),#fff);border-radius:12px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,0.05);display:flex;flex-direction:column;gap:10px}
+    .media{height:180px;border-radius:10px;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:12px;color:white;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
+    .meta{font-size:14px;color:var(--muted)}
+    .price{font-weight:700;color:var(--leather)}
+    .btns{display:flex;gap:8px;margin-top:auto}
+    .btn{
+      flex:1;padding:10px;border-radius:10px;text-align:center;font-weight:600;cursor:pointer;border:none;
+      background:linear-gradient(180deg,#fff,#f6efe8);box-shadow:0 6px 16px rgba(100,40,20,0.06)
+    }
+    .btn.wa{background:linear-gradient(180deg,#dff7ea,#c8f1d8);color:#0b7a3d}
+    .btn.ig{background:linear-gradient(180deg,#fce8e8,#f6dfe0);color:var(--accent)}
+
+    /* Complementos */
+    .complements{display:flex;gap:14px;flex-wrap:wrap}
+    .comp{flex:1;min-width:220px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(0,0,0,0.04)}
+    .comp img{border-radius:8px;height:140px;object-fit:cover;width:100%}
+
+    /* Who we are / reviews */
+    .two-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+    .quote{background:linear-gradient(180deg,#fff7f2,#fff2ec);padding:18px;border-radius:12px}
+    .reviews-list{display:flex;flex-direction:column;gap:12px}
+    .review{background:#fff;padding:12px;border-radius:10px;display:flex;gap:10px;align-items:flex-start}
+    .review img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+
+    /* Footer */
+    footer{margin-top:28px;padding:18px;border-radius:12px;background:linear-gradient(180deg,#fffefc,#f7f2ec);box-shadow:0 8px 20px rgba(0,0,0,0.04)}
+    .socials{display:flex;gap:12px;align-items:center}
+
+    /* Floating WhatsApp */
+    .floating-wa{
+      position:fixed;right:18px;bottom:18px;background:#25D366;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,211,102,0.18);z-index:1400;
+    }
+    .floating-wa a{display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .catalog{grid-template-columns:repeat(2,1fr)}
+      .two-cols{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      header{padding:12px}
+      .brand h1{font-size:18px}
+      .carousel .slide{padding:20px}
+      .catalog{grid-template-columns:1fr}
+      .logo{width:52px;height:52px}
+    }
+
+    /* Small helpers for file thumbnails */
+    .thumbs{display:flex;gap:8px;flex-wrap:wrap}
+    .thumbs img{width:68px;height:68px;object-fit:cover;border-radius:8px}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Arte en Acero</h1>
+          <div class="tagline">Afilamos, arreglamos y creamos tu cuchillo soñado</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegación principal">
+        <div class="hamburger" id="hambtn" aria-expanded="false" aria-controls="navpanel">
+          <div class="lines" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Side nav panel -->
+    <aside id="navpanel" class="navpanel" aria-hidden="true">
+      <h3>Menú</h3>
+      <a href="#complementos">Adicionales</a>
+      <a href="#quienes-somos">Quiénes somos</a>
+      <a href="#reseñas">Reseñas</a>
+      <div style="height:18px"></div>
+      <small style="color:var(--muted)">Contacto rápido</small>
+      <div style="margin-top:8px">
+        <a href="https://wa.me/59893720598" target="_blank">WhatsApp</a>
+        <a href="https://instagram.com/arte.en.acero.uy" target="_blank">Instagram</a>
+      </div>
+    </aside>
+
+    <!-- Carousel -->
+    <section class="carousel" aria-label="Galería principal">
+      <div class="slides" id="slides">
+        <div class="slide" style="background-image:
+          url('data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'1200\\' height=\\'600\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23823a2d\\'/><text x=\\'60\\' y=\\'340\\' font-size=\\'52\\' fill=\\'%23fff\\'>Cuchillo Tradicional</text></svg>');">
+          <div class="overlay">
+            <h2>Cuchillos destacados</h2>
+            <p>Hechos a mano con acero de alta calidad y empuñaduras en cuero genuino. Perfectos para campo y colección.</p>
+          </div>
+        </div>
+
+        <div class="slide" style="background-image:
+          url('data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'1200\\' height=\\'600\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23704a3a\\'/><text x=\\'60\\' y=\\'340\\' font-size=\\'52\\' fill=\\'%23fff\\'>Vainas de Cuero</text></svg>');">
+          <div class="overlay">
+            <h2>Vainas artesanales</h2>
+            <p>Cuero crudo y sintético, con opciones de personalización: bordado, grabado o tintura a mano.</p>
+          </div>
+        </div>
+
+        <div class="slide" style="background-image:
+          url('data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'1200\\' height=\\'600\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23b07a3c\\'/><text x=\\'60\\' y=\\'340\\' font-size=\\'52\\' fill=\\'%23fff\\'>Regalos con estilo</text></svg>');">
+          <div class="overlay">
+            <h2>Regalos únicos</h2>
+            <p>Presentaciones en caja de madera, opciones de grabado y tarjetas personalizadas para ocasiones especiales.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow left" id="prev" aria-hidden="true">&#10094;</div>
+      <div class="arrow right" id="next" aria-hidden="true">&#10095;</div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <!-- Catalog -->
+    <section id="catalogo">
+      <h2 style="margin-bottom:8px">Catálogo</h2>
+      <div class="catalog" id="catalogGrid">
+        <!-- Cards generated by JS -->
+      </div>
+    </section>
+
+    <!-- Complementos / Adicionales -->
+    <section id="complementos" style="margin-top:8px">
+      <h2>Adicionales</h2>
+      <div class="complements">
+        <div class="comp">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%' height='100%' fill='%23e7d7c7'/><text x='20' y='60' font-size='32' fill='%235a3a2a'>Vaina - cuero crudo</text></svg>" alt="Vaina cuero crudo">
+          <div style="padding-top:8px"><strong>Vaina de cuero crudo</strong><div class="meta">Coser a mano. Opción: con orificio para cinturón.</div></div>
+        </div>
+        <div class="comp">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%' height='100%' fill='%23f7efe6'/><text x='20' y='60' font-size='32' fill='%23704a3a'>Vaina - cuero sintético</text></svg>" alt="Vaina sintética">
+          <div style="padding-top:8px"><strong>Vaina sintética</strong><div class="meta">Apta para uso diario, resistente al agua.</div></div>
+        </div>
+        <div class="comp">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500'><rect width='100%' height='100%' fill='%23efe6de'/><text x='20' y='60' font-size='32' fill='%23823a2d'>Tabla especial</text></svg>" alt="Tabla especial">
+          <div style="padding-top:8px"><strong>Tabla con diseño</strong><div class="meta">Madera torneada con grabado artesanal.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who we are + Reviews -->
+    <section id="quienes-somos" style="margin-top:18px">
+      <h2>Quiénes somos</h2>
+      <div class="two-cols">
+        <div class="quote">
+          <p style="margin-top:0"><strong>Hola, gracias por entrar a nuestra tienda online.</strong></p>
+          <p>Nuestra tienda es <em>Arte en Acero</em>, un emprendimiento que creamos Bruno y Abi. Bruno, desde chico, ama hacer cuchillos: su papá le enseñó a usar las herramientas hasta que aprendió y nunca dejó de hacerlos. Abi disfruta pintar el campo, sacar fotos y la tranquilidad. Juntos nos complementamos y creamos este proyecto: Arte en Acero. Esperamos que te guste nuestro trabajo. Si querés saber más, podés contactarnos por WhatsApp o Instagram.</p>
+          <div style="margin-top:8px">
+            <a class="btn wa" href="https://wa.me/59893720598" target="_blank">WhatsApp</a>
+            <a class="btn ig" style="margin-left:8px" href="https://instagram.com/arte.en.acero.uy" target="_blank">Instagram</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 id="reseñas">Reseñas</h3>
+          <form id="reviewForm" class="quote" aria-label="Enviar reseña">
+            <label style="display:block;font-weight:600">Tu reseña</label>
+            <textarea id="reviewText" rows="3" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6d7cd;margin-top:8px"></textarea>
+            <label style="display:block;margin-top:10px;font-weight:600">Fotos (opcional)</label>
+            <input id="reviewFiles" type="file" accept="image/*" multiple style="margin-top:6px"/>
+            <div class="thumbs" id="thumbs" style="margin-top:8px"></div>
+            <button type="submit" class="btn" style="margin-top:10px">Enviar reseña</button>
+            <div style="margin-top:10px;color:var(--muted);font-size:13px">*Las fotos se almacenan solo localmente en la sesión del navegador (no subimos a servidor).</div>
+          </form>
+
+          <div class="reviews-list" id="reviewsList" style="margin-top:12px">
+            <!-- Reviews appended here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div>
+          <strong>Contacto</strong>
+          <div class="socials" style="margin-top:8px">
+            <div>WhatsApp: <a href="tel:+59893720598">093 720 598</a></div>
+            <div style="margin-left:12px">Instagram: <a href="https://instagram.com/arte.en.acero.uy" target="_blank">@arte.en.acero.uy</a></div>
+            <div style="margin-left:12px">Email: <a href="mailto:contacto@arteenacero.uy">contacto@arteenacero.uy</a></div>
+          </div>
+        </div>
+        <div style="color:var(--muted);font-size:13px">© Arte en Acero — Hecho a mano con intención y ganas.</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Floating WhatsApp -->
+  <div class="floating-wa" aria-hidden="false">
+    <a href="https://wa.me/59893720598" target="_blank" title="Contactar por WhatsApp" aria-label="WhatsApp">
+      <!-- Simple WhatsApp SVG -->
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.5 3.5v17l-4.2-1.1A9.8 9.8 0 0 1 6.1 5.2 9.7 9.7 0 0 1 16 3c2.8 0 4.5.8 4.5.8z" fill="#fff" opacity=".06"/>
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.149-.672.149-.198.297-.77.967-.944 1.166-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.149-.173.198-.298.298-.497.099-.198.05-.372-.025-.52-.075-.149-.672-1.62-.922-2.22-.242-.579-.487-.5-.672-.51l-.572-.01c-.198 0-.52.074-.793.372s-1.04 1.016-1.04 2.479c0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487 0 .0 .718.309 1.28.309.56 0 1.046-.07 1.44-.319.394-.249 1.218-1.017 1.39-1.999.173-.983.173-1.82.122-1.999-.05-.17-.198-.272-.445-.422z" fill="#fff"/>
+      </svg>
+    </a>
+  </div>
+
+  <script>
+    /**********************
+     * Datos editables:
+     * Agregá/quitá objetos en este array para cambiar el catalogo.
+     **********************/
+    const PRODUCTS = [
+      {
+        id: 'c1',
+        name: 'Cuchillo Campestre',
+        desc: 'Acero al carbono, empuñadura cuero natural. Hoja 18 cm.',
+        price: 'U$S 85',
+        mediaType: 'img',
+        mediaAlt: 'Cuchillo campestre'
+      },
+      {
+        id: 'c2',
+        name: 'Cuchillo de colección',
+        desc: 'Edición limitada, empuñadura tallada, terminado patinado.',
+        price: 'U$S 150',
+        mediaType: 'img',
+        mediaAlt: 'Cuchillo de colección'
+      },
+      {
+        id: 'v1',
+        name: 'Vaina cuero crudo',
+        desc: 'Coser a mano, opción para cinturón. Medida estándar.',
+        price: 'U$S 20',
+        mediaType: 'img',
+        mediaAlt: 'Vaina cuero'
+      },
+      // Agregá más productos aquí...
+    ];
+
+    // ---------- Catalog rendering ----------
+    const catalogGrid = document.getElementById('catalogGrid');
+
+    function createProductCard(p){
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.setAttribute('data-id', p.id);
+
+      // Media placeholder: use simple SVG background to keep todo en 1 archivo
+      const media = document.createElement('div');
+      media.className = 'media';
+      media.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="%23b07a3c"/><text x="24" y="70" font-size="36" fill="%23fff">${encodeURIComponent(p.name)}</text></svg>')`;
+      media.textContent = p.name;
+
+      const title = document.createElement('div');
+      title.innerHTML = `<strong>${p.name}</strong>`;
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = p.desc;
+
+      const price = document.createElement('div');
+      price.className = 'price';
+      price.textContent = p.price;
+
+      const btns = document.createElement('div');
+      btns.className = 'btns';
+
+      const wa = document.createElement('a');
+      wa.className = 'btn wa';
+      wa.href = 'https://wa.me/59893720598';
+      wa.target = '_blank';
+      wa.rel = 'noreferrer noopener';
+      wa.textContent = 'WhatsApp';
+
+      const ig = document.createElement('a');
+      ig.className = 'btn ig';
+      ig.href = 'https://instagram.com/arte.en.acero.uy';
+      ig.target = '_blank';
+      ig.rel = 'noreferrer noopener';
+      ig.textContent = 'Instagram';
+
+      btns.appendChild(wa);
+      btns.appendChild(ig);
+
+      card.appendChild(media);
+      card.appendChild(title);
+      card.appendChild(meta);
+      card.appendChild(price);
+      card.appendChild(btns);
+
+      return card;
+    }
+
+    function renderProducts(){
+      catalogGrid.innerHTML = '';
+      PRODUCTS.forEach(p => catalogGrid.appendChild(createProductCard(p)));
+    }
+
+    renderProducts();
+
+    // ---------- Carousel logic ----------
+    (function(){
+      const slides = document.getElementById('slides');
+      const dots = document.getElementById('dots');
+      const slideCount = slides.children.length;
+      let idx = 0;
+      let autoplay = true;
+      let timer;
+
+      // create dots
+      for(let i=0;i<slideCount;i++){
+        const d = document.createElement('div');
+        d.className='dot' + (i===0?' active':'');
+        d.dataset.index = i;
+        d.addEventListener('click', ()=>{ goTo(parseInt(d.dataset.index)); });
+        dots.appendChild(d);
+      }
+
+      function update(){
+        slides.style.transform = `translateX(-${idx*100}%)`;
+        [...dots.children].forEach((dot,i)=>dot.classList.toggle('active', i===idx));
+      }
+
+      function next(){ idx = (idx+1) % slideCount; update(); }
+      function prev(){ idx = (idx-1+slideCount) % slideCount; update(); }
+      function goTo(i){ idx = i; update(); resetTimer(); }
+
+      document.getElementById('next').addEventListener('click', ()=>{ next(); resetTimer(); });
+      document.getElementById('prev').addEventListener('click', ()=>{ prev(); resetTimer(); });
+
+      function resetTimer(){
+        if(timer) clearInterval(timer);
+        if(autoplay) timer = setInterval(next, 4500);
+      }
+      resetTimer();
+
+      // pause on hover
+      const carousel = document.querySelector('.carousel');
+      carousel.addEventListener('mouseenter', ()=>{ if(timer) clearInterval(timer); });
+      carousel.addEventListener('mouseleave', resetTimer);
+    })();
+
+    // ---------- Nav panel toggling ----------
+    (function(){
+      const btn = document.getElementById('hambtn');
+      const panel = document.getElementById('navpanel');
+      btn.addEventListener('click', ()=>{
+        const open = panel.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+        panel.setAttribute('aria-hidden', !open);
+      });
+      // close when clicking outside
+      document.addEventListener('click', (e)=>{
+        if(!panel.classList.contains('open')) return;
+        if(!panel.contains(e.target) && !btn.contains(e.target)) {
+          panel.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+          panel.setAttribute('aria-hidden', 'true');
+        }
+      });
+    })();
+
+    // ---------- Reviews handling (client-side only) ----------
+    (function(){
+      const form = document.getElementById('reviewForm');
+      const filesInput = document.getElementById('reviewFiles');
+      const thumbs = document.getElementById('thumbs');
+      const reviewsList = document.getElementById('reviewsList');
+
+      // Preview selected images
+      filesInput.addEventListener('change', (e)=>{
+        thumbs.innerHTML = '';
+        const files = Array.from(e.target.files).slice(0,6);
+        files.forEach(file=>{
+          const fr = new FileReader();
+          fr.onload = ()=> {
+            const img = document.createElement('img');
+            img.src = fr.result;
+            thumbs.appendChild(img);
+          };
+          fr.readAsDataURL(file);
+        });
+      });
+
+      function addReview(text, images){
+        const r = document.createElement('div');
+        r.className = 'review';
+        const left = document.createElement('div');
+        left.style.flex='0 0 64px';
+        const img = document.createElement('img');
+        img.src = images && images[0] ? images[0] : 'data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%23efe1d6\\'/><text x=\\'10\\' y=\\'70\\' font-size=\\'12\\' fill=\\'%23704a3a\\'>Foto</text></svg>';
+        img.alt = 'Foto reseña';
+        left.appendChild(img);
+
+        const right = document.createElement('div');
+        right.innerHTML = `<div style="font-weight:700">Cliente satisfecho</div><div style="font-size:14px;margin-top:6px">${escapeHtml(text)}</div>`;
+        if(images && images.length>1){
+          const gal = document.createElement('div'); gal.style.marginTop='8px'; gal.style.display='flex'; gal.style.gap='8px';
+          images.slice(0,3).forEach(src=>{
+            const im = document.createElement('img'); im.src = src; im.style.width='64px'; im.style.height='64px'; im.style.objectFit='cover'; im.style.borderRadius='8px';
+            gal.appendChild(im);
+          });
+          right.appendChild(gal);
+        }
+
+        r.appendChild(left);
+        r.appendChild(right);
+        reviewsList.prepend(r);
+      }
+
+      function escapeHtml(s){
+        return s.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+      }
+
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const text = document.getElementById('reviewText').value.trim();
+        if(!text) { alert('Escribí una reseña antes de enviar.'); return; }
+
+        const files = Array.from(filesInput.files || []);
+        if(files.length===0){
+          addReview(text, []);
+          form.reset();
+          thumbs.innerHTML='';
+          return;
+        }
+
+        // read files
+        const readers = files.map(f=> new Promise((res)=>{
+          const fr = new FileReader();
+          fr.onload = ()=> res(fr.result);
+          fr.readAsDataURL(f);
+        }));
+        Promise.all(readers).then(results=>{
+          addReview(text, results);
+          form.reset();
+          thumbs.innerHTML='';
+        });
+      });
+
+      // small example review on load
+      addReview('Recibí el cuchillo la semana pasada, excelente trabajo y acabado. ¡Gracias Bruno y Abi!', []);
+    })();
+
+  </script>
+</body>
+</html>
